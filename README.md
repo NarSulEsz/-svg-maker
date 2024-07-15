@@ -1,1 +1,1 @@
-# -svg-maker
+# svg-maker

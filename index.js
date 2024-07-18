@@ -1,40 +1,65 @@
-//Here is template for prompts to ask user about his preferenses
-
 const inquirer = require('inquirer');
+const fs = require('fs');
+const { Circle, Triangle, Square } = require('./lib/shapes');
+
+function createShape(shapeType, color, attributes) {
+  switch (shapeType.toLowerCase()) {
+    case 'circle':
+      return new Circle(color, attributes);
+    case 'triangle':
+      return new Triangle(color, attributes);
+    case 'square':
+      return new Square(color, attributes);
+    default:
+      return null;
+  }
+}
 
 inquirer
   .prompt([
     {
       type: 'input',
       name: 'shape',
-      message: 'Enter the shape you want to create (circle, rectangle, or line):',
+      message: 'Enter the shape for your logo (circle, triangle, or square):',
+      choices: ['Circle', 'Triangle', 'Square'],//I inserted "choices" property but it doesn't work anyway
+    },
+    {
+      type: 'input',
+      name: 'color',
+      message: 'Enter the color for the shape:',
     },
     {
       type: 'input',
       name: 'attributes',
-      message: 'Enter the attributes for the shape (e.g., radius for a circle, width and height for a rectangle, coordinates for a line):',
+      message: 'Enter the attributes for the shape (e.g., radius for a circle, side length for a square, coordinates for a triangle):',
     },
+    {
+      type: 'input',
+      name: 'text',
+      message: 'Enter up to three characters for the logo text:',
+      validate: (input) => input.length <= 3 || 'Text must be 3 characters or less', 
+  },
+  {
+      type: 'input',
+      name: 'textColor',
+      message: 'Enter a color for the text (keyword or hex):',
+  },
+    
   ])
   .then((answers) => {
-    let svgShape = '';
-
-    switch (answers.shape.toLowerCase()) {
-      case 'circle':
-        svgShape = `<svg width="100" height="100"><circle cx="50" cy="50" r="${answers.attributes}" fill="red" /></svg>`;
-        break;
-      case 'rectangle':
-        const [width, height] = answers.attributes.split(',');
-        svgShape = `<svg width="${width}" height="${height}"><rect width="${width}" height="${height}" fill="blue" /></svg>`;
-        break;
-      case 'line':
-        const [x1, y1, x2, y2] = answers.attributes.split(',');
-        svgShape = `<svg width="200" height="200"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="green" /></svg>`;
-        break;
-      default:
-        console.log('Invalid shape entered. Please enter circle, rectangle, or line.');
-        break;
+    const shape = createShape(answers.shape, answers.color, answers.attributes);
+    if (shape) {
+      const svgShape = shape.render();
+      fs.writeFile("shape.svg", `<svg width="200" height="200">${svgShape}</svg>`, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Successfully created SVG file!");
+        }
+      });
+      console.log(svgShape);
+    } else {
+      console.log('Invalid shape entered. Please enter circle, triangle, or square.');
     }
-
-    console.log(svgShape);
   })
   .catch((err) => console.log(err));

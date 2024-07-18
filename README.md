@@ -17,5 +17,6 @@ No special skills needed
 No special instructions needed
 This is link of repository: https://github.com/NarSulEsz/svg-maker
 
-This is link of GoogleDrive: https://drive.google.com/file/d/198U7JrrMb0TfnFfllc6n_wXzPQQLDqkb/view
+This is link of GoogleDrive: https://drive.google.com/file/d/198U7JrrMb0TfnFfllc6n_wXzPQQLDqkb/view?usp=drive_link
+
 
